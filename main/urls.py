@@ -16,6 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from reducer.views import redirect
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('<slug:slug>', redirect),
 ]
