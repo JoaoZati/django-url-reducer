@@ -7,6 +7,9 @@ class UrlRedirect(models.Model):
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return f'UrlRedirect para {self.destiny}'
+
 
 class UrlLog(models.Model):
     create_date = models.DateTimeField(auto_now_add=True)
