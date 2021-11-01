@@ -27,15 +27,16 @@ def reports(request, slug):
         UrlRedirect.objects.filter(
             slug=slug
         ).annotate(
-            data=TruncDate('logs__create_date')
+            date=TruncDate('logs__create_date')
         ).annotate(
-            clicks=Count('data')
-        ).order_by('data')
+            clicks=Count('date')
+        ).order_by('date')
     )
     context = {
         'reduce': url_redirect,
         'url_reduced': url_reduced,
         'redirects_date': redirects_date,
+        'total_clicks': sum(r.clicks for r in redirects_date)
     }
 
     return render(request, 'reduce.html', context)

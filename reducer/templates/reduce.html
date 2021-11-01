@@ -45,8 +45,8 @@
         </div>
       </div>
 
-      <h2 class="font-weight-bold mt-5">Total de Cliques: <span class="color-y">390</span></h2>
-      <p class="text-muted">Gráfico de Cliques por Dia</p>
+      <h2 class="font-weight-bold mt-5">Total Clicks: <span class="color-y">{{ total_clicks }}</span></h2>
+      <p class="text-muted">Graph Clicks per Day</p>
       <div class="row mt-3">
         <div class="offset-sm-1 col-sm-10">
 
@@ -65,46 +65,24 @@
             <!-- Tabela -->
             <div class="panel">
                 <div class="panel-heading">
-                    <h3 class="panel-title font-weight-bold mb-3">Cliques por Dia</h3>
+                    <h3 class="panel-title font-weight-bold mb-3">Clicks per Day</h3>
                 </div>
                     <div class="panel-body">
                         <div class="table-responsive">
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th class="text-left">Dias da Semana</th>
-                                        <th>Total de Clique</th>
+                                        <th class="text-left">Day of Week</th>
+                                        <th>Total Clicks</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr title="QTD de Cliques no Domingo">
-                                        <td class="text-left">Domingo</td>
-                                        <td>100</td>
+                                {% for r in redirects_date %}
+                                    <tr title="Total Clicks in {{ r.date }}">
+                                        <td class="text-left">{{ r.date }}</td>
+                                        <td>{{ r.clicks }}</td>
                                     </tr>
-                                    <tr title="QTD de Cliques na Segunda-Feira">
-                                        <td class="text-left">Segunda-Feira</td>
-                                        <td>30</td>
-                                    </tr>
-                                    <tr title="QTD de Cliques na Terça-Feira">
-                                        <td class="text-left">Terça-Feira</td>
-                                        <td>60</td>
-                                    </tr>
-                                    <tr title="QTD de Cliques na Quarta-Feira">
-                                        <td class="text-left">Quarta-Feira</td>
-                                        <td>30</td>
-                                    </tr>
-                                    <tr title="QTD de Cliques na Quinta-Feira">
-                                        <td class="text-left">Quinta-Feira</td>
-                                        <td>50</td>
-                                    </tr>
-                                    <tr title="QTD de Cliques na Sexta-Feira">
-                                        <td class="text-left">Sexta-Feira</td>
-                                        <td>90</td>
-                                    </tr>
-                                    <tr title="QTD de Cliques no Sábado">
-                                        <td class="text-left">Sábado</td>
-                                        <td>30</td>
-                                    </tr>
+                                {% endfor %}
                                 </tbody>
                             </table>
                         </div>
@@ -138,12 +116,20 @@
           // Como usar a Lib ChartJS com Django -> https://medium.com/code-rocket-blog/trabalhando-com-gr%C3%A1ficos-no-django-usando-chart-js-495aa6abbe0f
 
           data: {
-              labels: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
+              labels: [
+                  {% for r in redirects_date %}
+                      {{ r.data }},
+                  {% endfor %}
+              ],
               datasets: [{
-                  label: "Total de Cliques por Dia",
+                  label: "Total Clicks per Day",
                   backgroundColor: '#005490',
                   borderColor: '#005490',
-                  data: [100, 30, 60, 30, 50, 90, 30],
+                  data: [
+                      {% for r in redirects_date %}
+                        {{ r.clicks }},
+                      {% endfor %}
+                  ],
               }],
           },
           options: {
@@ -154,7 +140,7 @@
               },
               title: {
                   display: true,
-                  //text: 'Gráfico de Cliques por Dia'
+                  //text: 'Graph Clicks per Day'
               },
               tooltips: {
                   mode: 'index',
