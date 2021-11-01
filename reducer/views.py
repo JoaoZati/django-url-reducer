@@ -3,6 +3,9 @@ from django.shortcuts import render, redirect
 from reducer.models import UrlRedirect
 from reducer.models import UrlLog
 
+from django.db.models.functions import TruncDate
+from django.db.models import Count
+
 
 def redirect_url(request, slug):
     url_redirect = UrlRedirect.objects.get(slug=slug)
@@ -20,9 +23,19 @@ def redirect_url(request, slug):
 def reports(request, slug):
     url_redirect = UrlRedirect.objects.get(slug=slug)
     url_reduced = request.build_absolute_uri(f'/{slug}')
+    redirects_date = list(
+        UrlRedirect.objects.filter(
+            slug=slug
+        ).annotate(
+            data=TruncDate('logs__create_date')
+        ).annotate(
+            clicks=Count('data')
+        ).order_by('data')
+    )
     context = {
         'reduce': url_redirect,
         'url_reduced': url_reduced,
+        'redirects_date': redirects_date,
     }
 
     return render(request, 'reduce.html', context)
