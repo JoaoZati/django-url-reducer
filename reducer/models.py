@@ -11,8 +11,8 @@ class UrlRedirect(models.Model):
 class UrlLog(models.Model):
     create_date = models.DateTimeField(auto_now_add=True)
     origin = models.URLField(max_length=512, null=True, blank=True)
-    user_agent = models.CharField(manage=512, null=True, blank=True)
+    user_agent = models.CharField(max_length=512, null=True, blank=True)
     host = models.CharField(max_length=512, null=True, blank=True)
-    ip = models.IPAddressField(null=True, blank=True)
-    url_redirect = models.ForeignKey(UrlRedirect, models.DO_NOTHING,
+    ip = models.GenericIPAddressField(null=True, blank=True)
+    url_redirect = models.ForeignKey(UrlRedirect, on_delete=models.DO_NOTHING,
                                      related_name='logs')  # logs create automaticly a atribute in UrlRedirect
