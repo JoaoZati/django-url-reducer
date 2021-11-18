@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect
-
 from reducer.models import UrlRedirect
 from reducer.models import UrlLog
-
 from django.db.models.functions import TruncDate
 from django.db.models import Count
+import requests
+from django.urls import reverse
+from django.http import HttpResponseRedirect
+from django.contrib import messages
 
 
 def redirect_url(request, slug):
@@ -40,3 +42,26 @@ def reports(request, slug):
     }
 
     return render(request, 'reduce.html', context)
+
+
+def home(request):
+    if request.method == 'POST':
+        url = request.POST['url']
+        slug = request.POST['slug']
+
+        try:
+            requests.get(url)
+        except Exception as e:
+            messages.error(request, "Url didn't return a redirect response")
+            return render(request, 'index.html')
+
+        try:
+            UrlRedirect.objects.get(slug=slug)
+        except UrlRedirect.DoesNotExist:
+            UrlRedirect.objects.create(
+                destiny=url,
+                slug=slug,
+            )
+        return HttpResponseRedirect(reverse('reports', kwargs={'slug': slug}))
+
+    return render(request, 'index.html')
